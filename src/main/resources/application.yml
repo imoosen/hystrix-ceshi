@@ -1,0 +1,40 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: hystrix-ceshi
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance_id:${server.port}}
+  client:
+    service-url:
+      defaultZone: http://172.19.253.176:8761/eureka,http://172.19.228.186:8762/eureka,http://172.19.253.175:8763/eureka
+#      defaultZone: http://47.100.4.121:28761/eureka,http://47.100.4.121:28762/eureka,http://47.100.4.121:28763/eureka
+#      defaultZone: http://138.138.83.101:8761//eureka
+
+#开启熔断
+feign:
+  hystrix:
+    enabled: true
+#feign负载均衡连接配置
+ribbon:
+    ConnectTimeout: 10000
+    ReadTimeout: 100000
+    OkToRetryOnAllOperations: true
+    MaxAutoRetriesNextServer: 1
+    MaxAutoRetries: 1
+#熔断配置
+hystrix:
+  metrics:
+    #刷新间隔时间
+    polling-interval-ms: 2000
+  command:
+      default:
+        execution:
+          isolation:
+            thread:
+              #熔断超时时间毫秒
+              timeoutInMilliseconds: 50000
